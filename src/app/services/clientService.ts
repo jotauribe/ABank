@@ -19,6 +19,7 @@ export class ClientService {
   }
 
   registerClient(client: Client): Observable<Client> {
+    console.log('FROM REGISTERCLIENT SERVICE', client);
     const queryUrl = 'http://localhost:3000/clients/';
 
     return this.http.post<Client>(queryUrl, client);

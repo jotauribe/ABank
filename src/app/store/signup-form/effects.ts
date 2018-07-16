@@ -21,7 +21,6 @@ export class SignUpEffects {
       this.clientService.fetchClient(action.payload).pipe(
         // If successful, dispatch success action with result
         map(data => {
-          console.log('FROM EFFECT', data);
           return new SignUpActions.SearchClientDone(data);
         }),
         // If request fails, dispatch failed action
@@ -34,6 +33,7 @@ export class SignUpEffects {
   registerClient$: Observable<Action> = this.actions$.pipe(
     ofType(SignUpActions.REGISTER_CLIENT),
     switchMap((action: SignUpActions.RegisterClient) => {
+      console.log('FROM EFFECT', action.payload);
       return this.clientService.registerClient(action.payload).pipe(
         map(data => new SignUpActions.RegisterClientDone(data)),
         catchError(error => of(new SignUpActions.RegisterClientFailed(error)))

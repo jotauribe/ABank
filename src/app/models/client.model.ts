@@ -8,10 +8,12 @@ export class Client {
   id: string;
   firstName: string;
   lastName: string;
+  birthdate: string;
 
-  constructor(id, firstName, lastName) {
+  constructor(id, firstName, lastName, birthdate) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.birthdate = birthdate;
   }
 }

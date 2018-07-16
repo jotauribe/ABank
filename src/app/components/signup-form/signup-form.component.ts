@@ -14,6 +14,7 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
+import * as Moment from 'moment';
 
 import * as Actions from '../../store/signup-form/actions';
 import { State as SignupFormState } from '../../store/signup-form/reducers';
@@ -34,6 +35,8 @@ export class SignupFormComponent implements OnInit {
   @ViewChild('firstNameInput') firstNameInput: ElementRef;
   @ViewChild('lastNameInput') lastNameInput: ElementRef;
   @ViewChild('birthdateInput') birthdateInput: ElementRef;
+
+  loading: Observable<boolean>;
 
   constructor(private formBuilder: FormBuilder, private store: Store<Object>) {
     this.form = formBuilder.group({
@@ -56,7 +59,6 @@ export class SignupFormComponent implements OnInit {
       filter((text: string) => text.length > 1),
       debounceTime(50),
       tap((id: number) => {
-        console.log('BEFORE DISPATCH', id);
         this.store.dispatch(new Actions.SearchClient(id));
       })
     );
@@ -98,7 +100,14 @@ export class SignupFormComponent implements OnInit {
     const lastName = this.lastNameInput.nativeElement.value;
     const birthdate = this.birthdateInput.nativeElement.value;
     this.store.dispatch(
-      new Actions.RegisterClient(new Client(id, firstName, lastName))
+      new Actions.RegisterClient(
+        new Client(
+          id,
+          firstName,
+          lastName,
+          Moment(birthdate, 'MM/DD/YYYY').toISOString()
+        )
+      )
     );
   }
 }
