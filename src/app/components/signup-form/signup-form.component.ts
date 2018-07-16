@@ -17,19 +17,23 @@ import {
 
 import * as Actions from '../../store/signup-form/actions';
 import { State as SignupFormState } from '../../store/signup-form/reducers';
+import { Client } from '../../models/client.model';
 
 @Component({
   selector: 'app-signup-form',
   templateUrl: './signup-form.component.html',
   styleUrls: ['./signup-form.component.css']
 })
-export class SignupFormComponent implements OnInit, OnChanges {
+export class SignupFormComponent implements OnInit {
   form: FormGroup;
   storeObservable: Observable<Object>;
   state: SignupFormState;
   isClientIdRepeated: boolean;
 
   @ViewChild('idInput') idInput: ElementRef;
+  @ViewChild('firstNameInput') firstNameInput: ElementRef;
+  @ViewChild('lastNameInput') lastNameInput: ElementRef;
+  @ViewChild('birthdateInput') birthdateInput: ElementRef;
 
   constructor(private formBuilder: FormBuilder, private store: Store<Object>) {
     this.form = formBuilder.group({
@@ -60,19 +64,17 @@ export class SignupFormComponent implements OnInit, OnChanges {
     idInputObservable.subscribe();
 
     this.storeObservable = this.store.pipe(select('signupForm'));
-    this.storeObservable.subscribe((data: SignupFormState) => {
-      this.state = { ...data };
-      console.log('DATA FROM SUBSCRIPTION', this.state);
-      this.isClientIdRepeated = data.isClientIdRepeated;
-      if (data.isClientIdRepeated) {
-        console.log(this.isClientIdRepeated);
+    this.storeObservable.subscribe((state: SignupFormState) => {
+      this.state = { ...state };
+      this.isClientIdRepeated = state.isClientIdRepeated;
+
+      if (state.isClientIdRepeated) {
         this.form.controls['identity'].setErrors({ repeated: true });
       }
+      if (state.wasSubmitted) {
+        console.log('LOADING');
+      }
     });
-  }
-
-  ngOnChanges(changes) {
-    console.log('', changes);
   }
 
   getErrorMessage() {
@@ -83,7 +85,6 @@ export class SignupFormComponent implements OnInit, OnChanges {
 
   idInputValidator(control: FormControl) {
     const id = control.value;
-    console.log('FROM CUSTOM VALIDATOR ', id, this.isClientIdRepeated);
 
     if (this.isClientIdRepeated) {
       return { isClientIdRepeated: true, repeatedId: id };
@@ -92,6 +93,12 @@ export class SignupFormComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    console.log('Submit');
+    const id = this.idInput.nativeElement.value;
+    const firstName = this.firstNameInput.nativeElement.value;
+    const lastName = this.lastNameInput.nativeElement.value;
+    const birthdate = this.birthdateInput.nativeElement.value;
+    this.store.dispatch(
+      new Actions.RegisterClient(new Client(id, firstName, lastName))
+    );
   }
 }

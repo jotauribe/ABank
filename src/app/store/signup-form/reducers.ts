@@ -3,10 +3,14 @@ import * as SignupFormActions from './actions';
 
 export interface State {
   isClientIdRepeated: boolean;
+  wasSuccessful: boolean;
+  wasSubmitted: boolean;
 }
 
 const initialState: State = {
-  isClientIdRepeated: false
+  isClientIdRepeated: false,
+  wasSuccessful: false,
+  wasSubmitted: false
 };
 
 export function reducer(
