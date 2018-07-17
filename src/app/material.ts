@@ -24,6 +24,7 @@ import {
   MatTabsModule,
   MatListModule
 } from '@angular/material';
+import { MatProgressButtons } from 'mat-progress-buttons';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import {
     MatOptionModule,
     MatGridListModule,
     MatProgressBarModule,
+    MatProgressButtons,
     MatSliderModule,
     MatSlideToggleModule,
     MatMenuModule,
@@ -61,6 +63,7 @@ import {
     MatOptionModule,
     MatGridListModule,
     MatProgressBarModule,
+    MatProgressButtons,
     MatSliderModule,
     MatSlideToggleModule,
     MatMenuModule,
