@@ -13,13 +13,10 @@ export class ClientService {
   fetchClient(id: number): Observable<Client> {
     const queryUrl = `http://localhost:3000/clients/${id}`;
 
-    console.log('CALL TO CLIENT SERVICE::FETCHCLIENT', id);
-
     return this.http.get<Client>(queryUrl);
   }
 
   registerClient(client: Client): Observable<Client> {
-    console.log('FROM REGISTERCLIENT SERVICE', client);
     const queryUrl = 'http://localhost:3000/clients/';
 
     return this.http.post<Client>(queryUrl, client);
