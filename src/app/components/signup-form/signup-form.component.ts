@@ -1,19 +1,15 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  OnChanges
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, fromEvent } from 'rxjs';
-import { map, filter, debounceTime, tap, switchAll } from 'rxjs/operators';
+import { map, filter, debounceTime, tap } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
+import { ButtonOpts } from 'mat-progress-buttons';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators
 } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import * as Moment from 'moment';
 
 import * as Actions from '../../store/signup-form/actions';
@@ -30,6 +26,8 @@ export class SignupFormComponent implements OnInit {
   storeObservable: Observable<Object>;
   state: SignupFormState;
   isClientIdRepeated: boolean;
+  selectedBirthdate: Date;
+  isAValidBirthdate = true;
 
   @ViewChild('idInput') idInput: ElementRef;
   @ViewChild('firstNameInput') firstNameInput: ElementRef;
@@ -38,7 +36,22 @@ export class SignupFormComponent implements OnInit {
 
   loading: Observable<boolean>;
 
-  constructor(private formBuilder: FormBuilder, private store: Store<Object>) {
+  spinnerButtonOptions: ButtonOpts = {
+    active: false,
+    text: 'Submit',
+    spinnerSize: 18,
+    raised: true,
+    buttonColor: 'primary',
+    spinnerColor: 'accent',
+    fullWidth: false,
+    disabled: false
+  };
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store<Object>,
+    public snackBar: MatSnackBar
+  ) {
     this.form = formBuilder.group({
       identity: [
         null,
@@ -74,7 +87,13 @@ export class SignupFormComponent implements OnInit {
         this.form.controls['identity'].setErrors({ repeated: true });
       }
       if (state.wasSubmitted) {
-        console.log('LOADING');
+        this.spinnerButtonOptions.active = true;
+        this.spinnerButtonOptions.text = 'Registering client...';
+      }
+      if (state.wasSuccessful) {
+        this.spinnerButtonOptions.active = false;
+        this.spinnerButtonOptions.text = 'Submit';
+        this.snackBar.open('Successful Operation');
       }
     });
   }
@@ -83,6 +102,10 @@ export class SignupFormComponent implements OnInit {
     return this.isClientIdRepeated
       ? 'There is already a user with this id'
       : 'This field must to be numeric';
+  }
+
+  getBirthdateErrorMessage() {
+    return this.isAValidBirthdate ? 'Min age 18' : 'This field is required';
   }
 
   idInputValidator(control: FormControl) {
@@ -95,19 +118,33 @@ export class SignupFormComponent implements OnInit {
   }
 
   onSubmit() {
-    const id = this.idInput.nativeElement.value;
-    const firstName = this.firstNameInput.nativeElement.value;
-    const lastName = this.lastNameInput.nativeElement.value;
-    const birthdate = this.birthdateInput.nativeElement.value;
-    this.store.dispatch(
-      new Actions.RegisterClient(
-        new Client(
-          id,
-          firstName,
-          lastName,
-          Moment(birthdate, 'MM/DD/YYYY').toISOString()
+    if (this.form.valid) {
+      const id = this.idInput.nativeElement.value;
+      const firstName = this.firstNameInput.nativeElement.value;
+      const lastName = this.lastNameInput.nativeElement.value;
+      const birthdate = this.birthdateInput.nativeElement.value;
+
+      this.store.dispatch(
+        new Actions.RegisterClient(
+          new Client(
+            id,
+            firstName,
+            lastName,
+            Moment(birthdate, 'MM/DD/YYYY').toISOString()
+          )
         )
-      )
-    );
+      );
+    }
+  }
+
+  onBirthdateChange(dateString) {
+    this.selectedBirthdate = dateString;
+    const date = Moment(dateString, 'MM/DD/YYYY').toISOString();
+    const age = Moment().diff(date, 'years');
+    this.isAValidBirthdate = false;
+    if (age < 18) {
+      this.form.controls['birthDate'].setErrors({ invalidDate: true });
+      this.isAValidBirthdate = true;
+    }
   }
 }

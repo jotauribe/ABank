@@ -1,32 +1,39 @@
 <mat-card fxLayout='column wrap' class='Signup-form-container'>
     <mat-card-header fxFlex='100%'>
         <mat-card-title>Customer Registration</mat-card-title>
-        <mat-card-subtitle>New Account</mat-card-subtitle>
+        <mat-card-subtitle>New Client Form</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <form [formGroup]='form' (ngSubmit)="onSubmit()" fxFlex='100%' fxLayout='column' fxLayoutGap='10px'>
             <mat-form-field>
                 <input #idInput formControlName='identity' matInput placeholder="ID">
                 <mat-error *ngIf="!form.controls['identity'].valid">{{getErrorMessage()}}</mat-error>
-
             </mat-form-field>
             <div fxLayout='row' fxLayoutGap='10px'>
                 <mat-form-field fxFlex='50%'>
                     <input #firstNameInput formControlName='firstName' matInput placeholder="First Name">
+                    <mat-error *ngIf="!form.controls['firstName'].valid">This is a required field</mat-error>
                 </mat-form-field>
                 <mat-form-field fxFlex='50%'>
                     <input #lastNameInput formControlName='lastName' matInput placeholder="Last Name">
+                    <mat-error *ngIf="!form.controls['lastName'].valid">This is a required field</mat-error>
                 </mat-form-field>
             </div>
 
             <mat-form-field>
-                <input #birthdateInput formControlName='birthDate' matInput [matDatepicker]="picker" placeholder="Date of Birth">
+                <input #birthdateInput formControlName='birthDate' matInput [matDatepicker]="picker" placeholder="Date of Birth" [ngModel]="selectedBirthdate"
+                    (ngModelChange)="onBirthdateChange($event)">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                <mat-error *ngIf="!form.controls['birthDate'].valid">{{getBirthdateErrorMessage()}}</mat-error>
             </mat-form-field>
-            <mat-progress-spinner class="example-margin" [color]="green" [mode]="mode" [value]="value">
-            </mat-progress-spinner>
-            <button #submitButton mat-raised-button color="accent" [disabled]='!form.valid' type="submit">Signup</button>
+
+            <div fxLayout="row" fxLayoutAlign="end">
+                <button mat-button color="accent" [disabled]='!form.valid' type="submit">
+                    Cancel
+                </button>
+                <spinner-button #submitButton type="submit" [options]="spinnerButtonOptions"></spinner-button>
+            </div>
         </form>
     </mat-card-content>
 </mat-card>
