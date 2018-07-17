@@ -16,11 +16,22 @@ import { MaterialModule } from './material';
 import { SignupFormComponent } from './components/signup-form/signup-form.component';
 import { ClientService } from './services/clientService';
 import { SignupPageComponent } from './components/signup-page/signup-page.component';
+import { LoanRequestPageComponent } from './components/loan-request-page/loan-request-page.component';
+import { LoanRequestFormComponent } from './components/loan-request-form/loan-request-form.component';
 
-const appRoutes: Routes = [{ path: 'signup', component: SignupPageComponent }];
+const appRoutes: Routes = [
+  { path: 'signup', component: SignupPageComponent },
+  { path: 'loan-request', component: LoanRequestPageComponent }
+];
 
 @NgModule({
-  declarations: [AppComponent, SignupFormComponent, SignupPageComponent],
+  declarations: [
+    AppComponent,
+    SignupFormComponent,
+    SignupPageComponent,
+    LoanRequestPageComponent,
+    LoanRequestFormComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
