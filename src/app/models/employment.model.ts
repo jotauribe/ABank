@@ -1,21 +1,21 @@
-import { Company } from './company.model';
+import { ICompany } from './company.model';
 import { Client } from './client.model';
 
 export interface IEmployment {
-  client: Client;
-  company: Company;
+  clientId: number;
+  company: ICompany;
   salary: number;
   hireDate: string;
 }
 
 export class Employment implements IEmployment {
-  client: Client;
-  company: Company;
+  clientId: number;
+  company: ICompany;
   salary: number;
   hireDate: string;
 
-  constructor(client, company, salary, hireDate) {
-    this.client = client;
+  constructor(clientId, company, salary, hireDate) {
+    this.clientId = clientId;
     this.company = company;
     this.salary = salary;
     this.hireDate = hireDate;

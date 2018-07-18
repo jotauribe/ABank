@@ -17,7 +17,7 @@ export function reducer(
   state = initialState,
   action: SignupFormActions.Actions
 ) {
-  console.log('ON REDUCER ', action);
+  console.log('ON SIGNUP REDUCER ', action);
   switch (action.type) {
     case SignupFormActions.SEARCH_CLIENT_DONE:
       return {

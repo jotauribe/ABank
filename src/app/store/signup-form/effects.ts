@@ -33,7 +33,6 @@ export class SignUpEffects {
   registerClient$: Observable<Action> = this.actions$.pipe(
     ofType(SignUpActions.REGISTER_CLIENT),
     switchMap((action: SignUpActions.RegisterClient) => {
-      console.log('FROM EFFECT', action.payload);
       return this.clientService.registerClient(action.payload).pipe(
         map(data => new SignUpActions.RegisterClientDone(data)),
         catchError(error => of(new SignUpActions.RegisterClientFailed(error)))
