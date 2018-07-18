@@ -4,7 +4,7 @@ export interface IClient {
   lastName: string;
 }
 
-export class Client {
+export class Client implements IClient {
   id: string;
   firstName: string;
   lastName: string;

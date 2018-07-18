@@ -28,13 +28,9 @@ export class LoanRequestFormComponent implements OnInit {
   isClientIdRepeated: boolean;
   selectedBirthdate: Date;
   isAValidBirthdate = true;
-
-  @ViewChild('idInput') idInput: ElementRef;
-  @ViewChild('firstNameInput') firstNameInput: ElementRef;
-  @ViewChild('lastNameInput') lastNameInput: ElementRef;
-  @ViewChild('birthdateInput') birthdateInput: ElementRef;
-
   loading: Observable<boolean>;
+
+  @ViewChild('nit') idInput: ElementRef;
 
   spinnerButtonOptions: ButtonOpts = {
     active: false,
@@ -53,15 +49,58 @@ export class LoanRequestFormComponent implements OnInit {
     public snackBar: MatSnackBar
   ) {
     this.form = formBuilder.group({
-      identity: [
-        null,
-        Validators.compose([Validators.required, Validators.pattern(/^\d+$/)])
-      ],
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      birthDate: [null, Validators.required]
+      nit: [null, [Validators.required, Validators.pattern(/^\d+$/)]],
+      companyName: ['', Validators.required],
+      salary: [null, [Validators.required, this.salaryValidator]],
+      hireDate: [null, [Validators.required, this.hireDateValidator]]
     });
   }
 
   ngOnInit() {}
+
+  salaryValidator(control: FormControl) {
+    const salary = control.value;
+
+    const isNotNumeric = !/^\d+$/.test(salary);
+    const isNegative = salary < 0;
+    const isGreaterThan100M = salary > 100000000;
+
+    if (isNotNumeric) {
+      return {
+        isNotNumeric: { value: salary }
+      };
+    }
+
+    if (isNegative) {
+      return {
+        isNegative: { value: salary }
+      };
+    }
+
+    if (isGreaterThan100M) {
+      return {
+        isGreaterThan100M: { value: salary }
+      };
+    }
+
+    return null;
+  }
+
+  hireDateValidator(control: FormControl) {
+    const now = Moment();
+    const hireDate = Moment(control.value, 'MM/DD/YYYY');
+
+    console.log('hireDate', hireDate);
+
+    const isInvalidDate = !hireDate.isValid() || hireDate.isAfter(now);
+
+    if (isInvalidDate) {
+      console.log('hireDate IF', hireDate);
+      return {
+        isInvalidDate: { value: hireDate }
+      };
+    }
+
+    return null;
+  }
 }
