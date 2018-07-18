@@ -10,21 +10,38 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
 import { SignUpEffects } from './store/signup-form/effects';
+import { LoanRequestEffects } from './store/loan-request-form/effects';
 import { reducer as SignUpReducer } from './store/signup-form/reducers';
+import { reducer as LoanRequestFormReducer } from './store/loan-request-form/reducers';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material';
 import { SignupFormComponent } from './components/signup-form/signup-form.component';
 import { ClientService } from './services/clientService';
 import { SignupPageComponent } from './components/signup-page/signup-page.component';
+import { LoanRequestPageComponent } from './components/loan-request-page/loan-request-page.component';
+import {
+  LoanRequestFormComponent,
+  ResponseDialog
+} from './components/loan-request-form/loan-request-form.component';
 
-const appRoutes: Routes = [{ path: 'signup', component: SignupPageComponent }];
+const appRoutes: Routes = [
+  { path: 'signup', component: SignupPageComponent },
+  { path: 'loan-request', component: LoanRequestPageComponent }
+];
 
 @NgModule({
-  declarations: [AppComponent, SignupFormComponent, SignupPageComponent],
+  declarations: [
+    AppComponent,
+    SignupFormComponent,
+    SignupPageComponent,
+    LoanRequestPageComponent,
+    LoanRequestFormComponent,
+    ResponseDialog
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    EffectsModule.forRoot([SignUpEffects]),
+    EffectsModule.forRoot([SignUpEffects, LoanRequestEffects]),
     FlexLayoutModule,
     FormsModule,
     HttpClientModule,
@@ -35,8 +52,12 @@ const appRoutes: Routes = [{ path: 'signup', component: SignupPageComponent }];
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
-    StoreModule.forRoot({ signupForm: SignUpReducer })
+    StoreModule.forRoot({
+      signupForm: SignUpReducer,
+      loanRequestForm: LoanRequestFormReducer
+    })
   ],
+  entryComponents: [ResponseDialog],
   providers: [ClientService],
   bootstrap: [AppComponent]
 })

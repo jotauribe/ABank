@@ -1,0 +1,51 @@
+<mat-card fxLayout='column wrap' class='Signup-form-container'>
+  <mat-card-header fxFlex='100%'>
+    <mat-card-title>Apply for a Loan</mat-card-title>
+    <mat-card-subtitle>Loan Request Form</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]='form' (ngSubmit)="onSubmit()" fxFlex='100%' fxLayout='column' fxLayoutGap='10%'>
+      <div fxLayout='row' fxLayoutGap='10px'>
+        <mat-form-field fxFlex="30%">
+          <input #nit formControlName='nit' matInput placeholder="NIT">
+          <mat-error *ngIf="form.controls['nit'].hasError('required')">
+            NIT is
+            <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="form.controls['nit'].hasError('isNotNumeric')">This field can only contains numbers</mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="70%">
+          <input #companyName formControlName='companyName' matInput placeholder="Company Name">
+          <mat-error *ngIf="!form.controls['companyName'].valid">
+            Company Name is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxLayout='row' fxLayoutGap='10px'>
+        <mat-form-field fxFlex="30%">
+          <input #birthdateInput formControlName='hireDate' matInput [matDatepicker]="picker" placeholder="Hire date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker touchUi="true"></mat-datepicker>
+          <mat-error *ngIf="form.controls['hireDate'].hasError('isInvalidDate')">Invalid date</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input #salary formControlName='salary' matInput placeholder="Salary">
+          <mat-error *ngIf="form.controls['salary'].hasError('required')">
+            Salary is
+            <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="form.controls['salary'].hasError('isNotNumeric')">
+            Salary must to be a
+            <strong>number</strong>
+          </mat-error>
+          <mat-error *ngIf="form.controls['salary'].hasError('isGreaterThan100M')">
+            Salary cant't be greater than
+            <strong>100M</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <spinner-button #submitButton type="submit" [options]="spinnerButtonOptions" fxFlexAlign="end"></spinner-button>
+    </form>
+  </mat-card-content>
+</mat-card>
